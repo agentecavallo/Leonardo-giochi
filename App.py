@@ -42,7 +42,7 @@ ANIMALI = {
     "Formica 🐜": "Insetto", "Zanzara 🦟": "Insetto", "Mosca 🪰": "Insetto",
     "Grillo 🦗": "Insetto", "Cavalletta 🦗": "Insetto", "Scarafaggio 🪳": "Insetto",
     
-    # INVERTEBRATI (Molluschi, Aracnidi, Crostacei, ecc. raggruppati per semplicità)
+    # INVERTEBRATI 
     "Polpo 🐙": "Invertebrato", "Granchio 🦀": "Invertebrato", "Aragosta 🦞": "Invertebrato",
     "Gambero 🦐": "Invertebrato", "Calamaro 🦑": "Invertebrato", "Chiocciola 🐌": "Invertebrato",
     "Stella Marina 🌟": "Invertebrato", "Medusa 🪼": "Invertebrato", "Ragno 🕷️": "Invertebrato",
@@ -51,7 +51,7 @@ ANIMALI = {
 
 LISTA_CATEGORIE = list(set(ANIMALI.values()))
 
-# --- STILE CSS (Tema Giungla Pixel 8 Pro) ---
+# --- STILE CSS (Tema Giungla) ---
 st.markdown("""
     <style>
     .block-container {
@@ -88,6 +88,14 @@ st.markdown("""
         color: white !important;
         border: 2px solid #555 !important;
     }
+    .ripasso-box {
+        background-color: #1e1e1e;
+        border-left: 5px solid #ffcc00;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
     @media (max-width: 600px) {
         .block-container { padding-top: 2.8rem !important; }
         .titolo-game { font-size: 26px !important; }
@@ -110,6 +118,9 @@ if 'round_ani' not in st.session_state:
     st.session_state.round_ani = 1
 if 'msg_ani' not in st.session_state:
     st.session_state.msg_ani = ""
+# Nuova variabile di stato per ricordare gli errori
+if 'lista_errori' not in st.session_state:
+    st.session_state.lista_errori = []
 
 def genera_domanda_animale():
     animale = random.choice(list(ANIMALI.keys()))
@@ -118,7 +129,6 @@ def genera_domanda_animale():
     st.session_state.animale_corrente = animale
     st.session_state.categoria_giusta = categoria_giusta
     
-    # Seleziona 2 categorie sbagliate
     categorie_errate = random.sample([c for c in LISTA_CATEGORIE if c != categoria_giusta], 2)
     
     opzioni = [categoria_giusta] + categorie_errate
@@ -130,13 +140,14 @@ def verifica_ani(scelta):
     tempo_risposta = time.time() - st.session_state.tempo_inizio_ani
     giusta = st.session_state.categoria_giusta
     
-    # Separa il nome dell'animale dall'emoji (es: "Pesce Pagliaccio 🐠" -> "Pesce Pagliaccio")
     parti_nome = st.session_state.animale_corrente.split(" ")
     animale_puro = " ".join(parti_nome[:-1]) if len(parti_nome) > 1 else parti_nome[0]
     
     if tempo_risposta > TEMPO_LIMITE:
         st.session_state.msg_ani = f"⏱️ TEMPO SCADUTO! Era: {giusta}"
         st.session_state.tipo_msg_ani = "error"
+        # Salva l'errore per tempo scaduto
+        st.session_state.lista_errori.append({"animale": st.session_state.animale_corrente, "risposta": "Tempo Scaduto ⏳", "giusta": giusta})
     elif scelta == giusta:
         st.session_state.msg_ani = f"🚀 BRAVO! Il {animale_puro} è un {giusta}!"
         st.session_state.punteggio_ani += 1
@@ -144,6 +155,8 @@ def verifica_ani(scelta):
     else:
         st.session_state.msg_ani = f"👾 OPS! Il {animale_puro} è un {giusta}!"
         st.session_state.tipo_msg_ani = "error"
+        # Salva l'errore se ha scelto la categoria sbagliata
+        st.session_state.lista_errori.append({"animale": st.session_state.animale_corrente, "risposta": scelta, "giusta": giusta})
         
     st.session_state.round_ani += 1
     if st.session_state.round_ani > TOTAL_DOMANDE:
@@ -160,6 +173,7 @@ if st.session_state.stato_ani == 'inizio':
         st.session_state.punteggio_ani = 0
         st.session_state.round_ani = 1
         st.session_state.msg_ani = ""
+        st.session_state.lista_errori = [] # Azzera gli errori ad ogni nuova partita
         st.session_state.stato_ani = 'in_corso'
         genera_domanda_animale()
         st.rerun()
@@ -196,15 +210,23 @@ elif st.session_state.stato_ani == 'fine':
     st.markdown(f"<h1>Punteggio: {st.session_state.punteggio_ani}/{TOTAL_DOMANDE}</h1>", unsafe_allow_html=True)
     
     if st.session_state.punteggio_ani == TOTAL_DOMANDE:
-        st.success("SEI UN VERO ZOOLOGO! 🦁🏆")
-    elif st.session_state.punteggio_ani >= 10:
-        st.success("OTTIMA CONOSCENZA DELLA NATURA! 🌿⭐")
+        st.success("SEI UN VERO ZOOLOGO! Punteggio Perfetto! 🦁🏆")
     else:
-        st.info("Ben fatto! La natura ha ancora tanti segreti da svelarti! 🦋")
+        # SEZIONE RIPASSO DEGLI ERRORI
+        st.markdown("<h3 style='color: #ffcc00; margin-top: 20px;'>📝 Ripasso per il prossimo Safari:</h3>", unsafe_allow_html=True)
+        for errore in st.session_state.lista_errori:
+            st.markdown(f"""
+            <div class="ripasso-box">
+                <b>{errore['animale']}</b><br>
+                Hai risposto: <span style='color: #ff4b4b;'>{errore['risposta']}</span> ❌<br>
+                Categoria giusta: <span style='color: #00ff00;'>{errore['giusta']}</span> ✅
+            </div>
+            """, unsafe_allow_html=True)
     
+    st.markdown("<br>", unsafe_allow_html=True)
     if st.button("🎮 RIGIOCA", use_container_width=True):
         st.session_state.stato_ani = 'inizio'
         st.session_state.msg_ani = ""
         st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
-  
+    
