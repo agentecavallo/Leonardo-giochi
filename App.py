@@ -5,48 +5,71 @@ import time
 # --- CONFIGURAZIONE PAGINA ---
 st.set_page_config(page_title="Leo's Animal Kingdom", page_icon="🦁", layout="centered")
 
-# --- MAXI DATABASE ANIMALI ---
+# --- MAXI DATABASE ANIMALI ESTESO (Oltre 120 animali da tutto il mondo) ---
 ANIMALI = {
-    # MAMMIFERI
+    # MAMMIFERI (Anche i più strani!)
     "Leone 🦁": "Mammifero", "Delfino 🐬": "Mammifero", "Pipistrello 🦇": "Mammifero",
     "Elefante 🐘": "Mammifero", "Balena 🐋": "Mammifero", "Cane 🐕": "Mammifero",
     "Gatto 🐈": "Mammifero", "Tigre 🐅": "Mammifero", "Orso 🐻": "Mammifero",
     "Giraffa 🦒": "Mammifero", "Zebra 🦓": "Mammifero", "Scimmia 🐒": "Mammifero",
     "Canguro 🦘": "Mammifero", "Koala 🐨": "Mammifero", "Panda 🐼": "Mammifero",
-    "Mucca 🐄": "Mammifero", "Cavallo 🐎": "Mammifero", "Maiale 🐖": "Mammifero",
-    "Pecora 🐑": "Mammifero", "Topo 🐁": "Mammifero", "Scoiattolo 🐿️": "Mammifero",
-    "Ippopotamo 🦛": "Mammifero", "Rinoceronte 🦏": "Mammifero", "Cammello 🐪": "Mammifero",
-    "Gorilla 🦍": "Mammifero", "Lupo 🐺": "Mammifero", "Volpe 🦊": "Mammifero",
-    
+    "Ornitorinco 🦦🦆": "Mammifero", "Capibara 🟤": "Mammifero", "Pipistrello della Frutta 🦇🍌": "Mammifero",
+    "Bradipo 🦥": "Mammifero", "Lontra 🦦": "Mammifero", "Castoro 🦫": "Mammifero",
+    "Puzzola 🦨": "Mammifero", "Tasso 🦡": "Mammifero", "Procione 🦝": "Mammifero",
+    "Lama 🦙": "Mammifero", "Alpaca 🦙": "Mammifero", "Iena 🤎": "Mammifero",
+    "Ghepardo 🐆": "Mammifero", "Pantera 🐈‍⬛": "Mammifero", "Lemure 🐒": "Mammifero",
+    "Gorilla 🦍": "Mammifero", "Orango 🦧": "Mammifero", "Alce 🫎": "Mammifero",
+    "Cervo 🦌": "Mammifero", "Bisonte 🦬": "Mammifero", "Cinghiale 🐗": "Mammifero",
+    "Formichiere 🐜👅": "Mammifero", "Foca 🦭": "Mammifero", "Tricheco 🦭": "Mammifero",
+    "Leone Marino 🦭": "Mammifero", "Orca 🐋": "Mammifero", "Narvalo 🐳🦄": "Mammifero",
+    "Beluga 🐳": "Mammifero", "Suricato 🦦": "Mammifero", "Armadillo 🪖": "Mammifero",
+    "Porcellino d'India 🐹": "Mammifero", "Criceto 🐹": "Mammifero", "Lupo 🐺": "Mammifero",
+    "Volpe 🦊": "Mammifero", "Pangolino 🛡️": "Mammifero", "Vombato 🐻⬇️": "Mammifero",
+
     # UCCELLI
     "Aquila 🦅": "Uccello", "Pinguino 🐧": "Uccello", "Pappagallo 🦜": "Uccello",
     "Gufo 🦉": "Uccello", "Gallina 🐔": "Uccello", "Cigno 🦢": "Uccello",
     "Anatra 🦆": "Uccello", "Fenicottero 🦩": "Uccello", "Pavone 🦚": "Uccello",
     "Gabbiano 🕊️": "Uccello", "Tacchino 🦃": "Uccello", "Piccione 🐦": "Uccello",
+    "Kiwi 🥝🐦": "Uccello", "Struzzo 🦅🏃": "Uccello", "Emù 🦅": "Uccello",
+    "Pellicano 🦢🐟": "Uccello", "Tucano 🦜": "Uccello", "Colibrì 🐦✨": "Uccello",
+    "Picchio 🐦🪵": "Uccello", "Falco 🦅": "Uccello", "Avvoltoio 🦅": "Uccello",
+    "Corvo 🐦‍⬛": "Uccello", "Pettirosso 🐦": "Uccello", "Rondine 🐦": "Uccello",
     
     # RETTILI
     "Serpente 🐍": "Rettile", "Coccodrillo 🐊": "Rettile", "Tartaruga 🐢": "Rettile",
     "Camaleonte 🦎": "Rettile", "Iguana 🦎": "Rettile", "Lucertola 🦎": "Rettile",
-    "Drago di Komodo 🐉": "Rettile",
+    "Anaconda 🐍": "Rettile", "Pitone 🐍": "Rettile", "Cobra 🐍": "Rettile",
+    "Alligatore 🐊": "Rettile", "Geco 🦎": "Rettile", "Drago di Komodo 🐉": "Rettile",
     
     # PESCI
     "Squalo 🦈": "Pesce", "Pesce Pagliaccio 🐠": "Pesce", "Salmone 🐟": "Pesce",
-    "Pesce Palla 🐡": "Pesce", "Cavalluccio Marino 🌊🐎": "Pesce", 
-    "Tonno 🐟": "Pesce", "Manta 🦈": "Pesce",
+    "Pesce Palla 🐡": "Pesce", "Cavalluccio Marino 🌊🐎": "Pesce", "Tonno 🐟": "Pesce",
+    "Pesce Spada 🐟⚔️": "Pesce", "Piranha 🐟🦷": "Pesce", "Anguilla 🐟⚡": "Pesce",
+    "Murena 🐟": "Pesce", "Carpa 🐟": "Pesce", "Razza 🦈": "Pesce",
+    "Squalo Martello 🦈🔨": "Pesce", "Pesce Luna 🐟🌕": "Pesce",
     
     # ANFIBI
     "Rana 🐸": "Anfibio", "Rospo 🐸": "Anfibio", "Salamandra 🦎💧": "Anfibio",
+    "Axolotl (Assolotto) 🦎🎀": "Anfibio", "Tritone 🦎💧": "Anfibio", "Raganella 🐸🌳": "Anfibio",
+    "Rana Freccia Velenosa 🐸⚠️": "Anfibio",
     
     # INSETTI
     "Farfalla 🦋": "Insetto", "Ape 🐝": "Insetto", "Coccinella 🐞": "Insetto",
     "Formica 🐜": "Insetto", "Zanzara 🦟": "Insetto", "Mosca 🪰": "Insetto",
     "Grillo 🦗": "Insetto", "Cavalletta 🦗": "Insetto", "Scarafaggio 🪳": "Insetto",
+    "Mantide Religiosa 🦗🙏": "Insetto", "Scarabeo 🪲": "Insetto", "Lucciola 🪲✨": "Insetto",
+    "Libellula 🦟✨": "Insetto", "Vespa 🐝": "Insetto", "Calabrone 🐝": "Insetto",
+    "Falena 🦋🌙": "Insetto",
     
-    # INVERTEBRATI 
+    # INVERTEBRATI
     "Polpo 🐙": "Invertebrato", "Granchio 🦀": "Invertebrato", "Aragosta 🦞": "Invertebrato",
     "Gambero 🦐": "Invertebrato", "Calamaro 🦑": "Invertebrato", "Chiocciola 🐌": "Invertebrato",
     "Stella Marina 🌟": "Invertebrato", "Medusa 🪼": "Invertebrato", "Ragno 🕷️": "Invertebrato",
-    "Scorpione 🦂": "Invertebrato", "Verme 🪱": "Invertebrato"
+    "Scorpione 🦂": "Invertebrato", "Verme 🪱": "Invertebrato", "Lombrico 🪱": "Invertebrato",
+    "Millepiedi 🐛": "Invertebrato", "Sanguisuga 🪱🩸": "Invertebrato", "Tarantola 🕷️🕸️": "Invertebrato",
+    "Ostrica 🦪": "Invertebrato", "Riccio di Mare 🦔🌊": "Invertebrato", "Corallo 🪸": "Invertebrato",
+    "Spugna di Mare 🧽": "Invertebrato"
 }
 
 LISTA_CATEGORIE = list(set(ANIMALI.values()))
@@ -100,7 +123,7 @@ st.markdown("""
         .block-container { padding-top: 2.8rem !important; }
         .titolo-game { font-size: 26px !important; }
         .domanda-box { padding: 15px !important; }
-        .domanda-box p:last-child { font-size: 45px !important; }
+        .domanda-box p:last-child { font-size: 38px !important; }
         div.stButton > button { height: 65px !important; font-size: 18px !important; }
     }
     </style>
@@ -118,7 +141,6 @@ if 'round_ani' not in st.session_state:
     st.session_state.round_ani = 1
 if 'msg_ani' not in st.session_state:
     st.session_state.msg_ani = ""
-# Nuova variabile di stato per ricordare gli errori
 if 'lista_errori' not in st.session_state:
     st.session_state.lista_errori = []
 
@@ -140,13 +162,13 @@ def verifica_ani(scelta):
     tempo_risposta = time.time() - st.session_state.tempo_inizio_ani
     giusta = st.session_state.categoria_giusta
     
+    # Rimuove le emoji solo per il messaggio in basso
     parti_nome = st.session_state.animale_corrente.split(" ")
     animale_puro = " ".join(parti_nome[:-1]) if len(parti_nome) > 1 else parti_nome[0]
     
     if tempo_risposta > TEMPO_LIMITE:
         st.session_state.msg_ani = f"⏱️ TEMPO SCADUTO! Era: {giusta}"
         st.session_state.tipo_msg_ani = "error"
-        # Salva l'errore per tempo scaduto
         st.session_state.lista_errori.append({"animale": st.session_state.animale_corrente, "risposta": "Tempo Scaduto ⏳", "giusta": giusta})
     elif scelta == giusta:
         st.session_state.msg_ani = f"🚀 BRAVO! Il {animale_puro} è un {giusta}!"
@@ -155,7 +177,6 @@ def verifica_ani(scelta):
     else:
         st.session_state.msg_ani = f"👾 OPS! Il {animale_puro} è un {giusta}!"
         st.session_state.tipo_msg_ani = "error"
-        # Salva l'errore se ha scelto la categoria sbagliata
         st.session_state.lista_errori.append({"animale": st.session_state.animale_corrente, "risposta": scelta, "giusta": giusta})
         
     st.session_state.round_ani += 1
@@ -173,7 +194,7 @@ if st.session_state.stato_ani == 'inizio':
         st.session_state.punteggio_ani = 0
         st.session_state.round_ani = 1
         st.session_state.msg_ani = ""
-        st.session_state.lista_errori = [] # Azzera gli errori ad ogni nuova partita
+        st.session_state.lista_errori = [] 
         st.session_state.stato_ani = 'in_corso'
         genera_domanda_animale()
         st.rerun()
